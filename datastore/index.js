@@ -24,11 +24,26 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  // var data = _.map(items, (text, id) => {
+  //   return { id, text };
+  // });
+  // callback(null, data);
+
+  fs.readdir(exports.dataDir, (err, todoList) => {
+    if (err) {
+      callback(null, []);
+    } else {
+      todoList.map(todo => {
+        console.log(todo);
+        callback(null, todo);
+      });
+    }
   });
-  callback(null, data);
 };
+
+// Next, refactor the readAll function by returning an array of todos to client app whenever a GET request to the collection route occurs. To do this, you will need to read the dataDir directory and build a list of files. Remember, the id of each todo item is encoded in its filename.
+
+// Please note, however, you must still include a text field in your response to the client, and it's recommended that you use the message's id (that you identified from the filename) for both the id field and the text field. Doing so will have the effect of changing the presentation of your todo items for the time being; we'll address this issue shortly.
 
 exports.readOne = (id, callback) => {
   var text = items[id];

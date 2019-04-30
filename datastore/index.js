@@ -24,55 +24,65 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  // var data = _.map(items, (text, id) => {
-  //   return { id, text };
-  // });
-  // callback(null, data);
-
   fs.readdir(exports.dataDir, (err, todoList) => {
     if (err) {
-      callback(null, []);
+      console.log('error');
     } else {
-      todoList.map(todo => {
-        console.log(todo);
-        callback(null, todo);
+      if (todoList.length === 0) {
+        callback(null, []);
+      } else {
+        var arr = [];
+        for (var i = 0; i < todoList.length; i++) {
+          var id = todoList[i].split('.');
+          var file = {id: id[0], text: id[0]};
+          arr.push(file);
+        }
+        callback(null, arr);
+      }
+    }
+  });
+};
+
+exports.readOne = (id, callback) => {
+  fs.readFile(path.join(exports.dataDir, `${id}.txt`), 'utf8', (err, text) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text });
+    }
+  });
+};
+
+exports.update = (id, text, callback) => {
+  fs.readFile(path.join(exports.dataDir, `${id}.txt`), 'utf8', (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      fs.writeFile(path.join(exports.dataDir, `${id}.txt`), text, (err) => {
+        if (err) {
+          console.log('error'); 
+        } else {
+          callback(null, ({id, text}));
+        }
       });
     }
   });
 };
 
-// Next, refactor the readAll function by returning an array of todos to client app whenever a GET request to the collection route occurs. To do this, you will need to read the dataDir directory and build a list of files. Remember, the id of each todo item is encoded in its filename.
-
-// Please note, however, you must still include a text field in your response to the client, and it's recommended that you use the message's id (that you identified from the filename) for both the id field and the text field. Doing so will have the effect of changing the presentation of your todo items for the time being; we'll address this issue shortly.
-
-exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
-};
-
-exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
-};
-
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  fs.readFile(path.join(exports.dataDir, `${id}.txt`), 'utf8', (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      fs.unlink(path.join(exports.dataDir, `${id}.txt`), (err) => {
+        if (err) {
+          callback(new Error(`No item with id: ${id}`));
+        } else {
+          callback(null, undefined);
+        }
+      });
+    }
+  });
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////

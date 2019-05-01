@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+var Promise = require('bluebird');
 
 var items = {};
 
@@ -24,22 +25,34 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  fs.readdir(exports.dataDir, (err, todoList) => {
-    if (err) {
-      console.log('error');
-    } else {
-      if (todoList.length === 0) {
-        callback(null, []);
-      } else {
-        var arr = [];
-        for (var i = 0; i < todoList.length; i++) {
-          var id = todoList[i].split('.');
-          var file = {id: id[0], text: id[0]};
-          arr.push(file);
+  var promiseOne = 
+    new Promise((resolve, reject) => { 
+      fs.readdir(exports.dataDir, (err, files) => { 
+        if (err) {
+          reject(err);
+        } else {
+          resolve(files);
         }
-        callback(null, arr);
+      });
+    });
+
+  promiseOne.then((files) => {
+    new Promise((resolve, reject) => {
+      var arr = [];
+      for (var i = 0; i < files.length; i++) {
+        var id = files[i].split('.')[0];
+        var data = fs.readFileSync(path.join(exports.dataDir, files[i]), 'utf-8');
+        var file = {id: id, text: data};
+        arr.push(file);
       }
-    }
+      console.log(arr);
+      resolve(callback(null, arr));
+    });
+
+    // Promise.all([promiseTwo]).then(values => {
+    //   // console.log('PromiseALL: ' , values);
+    //   return values;
+    // });
   });
 };
 

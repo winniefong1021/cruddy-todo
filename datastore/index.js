@@ -5,12 +5,16 @@ const counter = require('./counter');
 
 var items = {};
 
-// Public API - Fix these CRUD functions ///////////////////////////////////////
-
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err, id) => {
+    fs.writeFile(path.join(exports.dataDir, `${id}.txt`), text, (err) => {
+      if (err) {
+        console.log('error');
+      } else {
+        callback(null, { id, text });
+      }
+    });
+  });
 };
 
 exports.readAll = (callback) => {
@@ -43,14 +47,11 @@ exports.delete = (id, callback) => {
   var item = items[id];
   delete items[id];
   if (!item) {
-    // report an error if item not found
     callback(new Error(`No item with id: ${id}`));
   } else {
     callback();
   }
 };
-
-// Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
 exports.dataDir = path.join(__dirname, 'data');
 

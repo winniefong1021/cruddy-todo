@@ -1,9 +1,4 @@
-
-// Todo Model //////////////////////////////////////////////////////////////////
-
 const Todo = require('./datastore');
-
-// Configure Express ///////////////////////////////////////////////////////////
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -16,9 +11,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, './public')));
 
-// RESTful Routes for CRUD operations //////////////////////////////////////////
-
-// Create (Crud) -- collection route
 app.post('/todo', (req, res) => {
   Todo.create(req.body.todoText, (err, newTodo) => {
     if (err) {
@@ -29,7 +21,6 @@ app.post('/todo', (req, res) => {
   });
 });
 
-// Read all (cRud) -- collection route
 app.get('/todo', (req, res) => {
   Todo.readAll((err, todos) => {
     if (err) {
@@ -40,7 +31,6 @@ app.get('/todo', (req, res) => {
   });
 });
 
-// Read one (cRud) -- member route
 app.get('/todo/:id', (req, res) => {
   Todo.readOne(req.params.id, (err, todo) => {
     if (todo) {
@@ -51,7 +41,6 @@ app.get('/todo/:id', (req, res) => {
   });
 });
 
-// Update (crUd) -- member route
 app.put('/todo/:id', (req, res) => {
   Todo.update(req.params.id, req.body.todoText, (err, todo) => {
     if (todo) {
@@ -62,7 +51,6 @@ app.put('/todo/:id', (req, res) => {
   });
 });
 
-// Delete (cruD) -- member route
 app.delete('/todo/:id', (req, res) => {
   Todo.delete(req.params.id, (err) => {
     if (err) {
@@ -72,8 +60,6 @@ app.delete('/todo/:id', (req, res) => {
     }
   });
 });
-
-// Start & Initialize Web Server ///////////////////////////////////////////////
 
 const port = 3000;
 app.listen(port, () => {

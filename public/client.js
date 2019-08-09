@@ -1,7 +1,5 @@
 $(() => {
 
-  // View ////////////////////////////////////////////////////////////////////////
-
   var template = _.template(`
     <li data-id="<%=id%>" class="todo">
       <span><%=text%></span>
@@ -32,8 +30,6 @@ $(() => {
     });
   };
 
-  // Controller //////////////////////////////////////////////////////////////////
-
   $('#form button').click( (event) => {
     var text = $('#form input').val().trim();
     if (text) {
@@ -55,8 +51,6 @@ $(() => {
       Todo.delete(id, removeTodo.bind(null, id));
     }
   });
-
-  // Initialization //////////////////////////////////////////////////////////////
 
   console.log('CRUDdy Todo client is running the browser');
   Todo.readAll(addAllTodos);

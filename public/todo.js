@@ -1,11 +1,7 @@
-
-// Todo Model //////////////////////////////////////////////////////////////////
-
 window.Todo = {
 
   url: '/todo',
 
-  // Create (Crud) -- collection
   create: function(text, callback) {
     return $.ajax({
       url: this.url,
@@ -16,7 +12,6 @@ window.Todo = {
     });
   },
 
-  // Read all (cRud) -- collection
   readAll: function(callback) {
     return $.ajax({
       url: this.url,
@@ -26,7 +21,6 @@ window.Todo = {
     });
   },
 
-  // Read one (cRud) -- member
   readOne: function(id, callback) {
     return $.ajax({
       url: `${this.url}/${id}`,
@@ -36,7 +30,6 @@ window.Todo = {
     });
   },
 
-  // Update (crUd) -- member
   update: function(id, text, callback) {
     return $.ajax({
       url: `${this.url}/${id}`,
@@ -47,7 +40,6 @@ window.Todo = {
     });
   },
 
-  // Delete (cruD) -- member
   delete: function(id, callback) {
     return $.ajax({
       url: `${this.url}/${id}`,
